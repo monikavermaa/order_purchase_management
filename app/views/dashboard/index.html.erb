@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h1 class="text-center">Dashboard</h1>
+    <div class="d-flex gap-2">
+      <%= link_to 'Create New Order', new_order_path, class: 'btn btn-primary' %>
+      <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: 'btn btn-primary' %>
+    </div>
+
+
+
+    <!-- Orders Section -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Recent Orders</h5>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Order Number</th>
+              <th>Total Amount</th>
+              <th>Delivery Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @orders.each do |order| %>
+              <tr>
+                <td><%= order.order_number %></td>
+                <td><%= number_to_currency(order.total_amount) %></td>
+                <td><%= "#{order.delivery_address}, #{order.delivery_city}, #{order.delivery_state}, #{order.delivery_zipcode}" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Stock Section -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Stock Status</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h6>East Warehouse Stock</h6>
+            <p><%= @total_stock_east %> Items</p>
+          </div>
+          <div class="col-md-6">
+            <h6>West Warehouse Stock</h6>
+            <p><%= @total_stock_west %> Items</p>
+          </div>
+        </div>
+
+        <h6 class="mt-3">Stock per SKU</h6>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>SKU Code</th>
+              <th>Stock Available</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @stock_status.each do |sku_code, stock| %>
+              <tr>
+                <td><%= sku_code %></td>
+                <td><%= stock %> Items</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Prefecture Codes Section -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Prefecture Information</h5>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Prefecture Name</th>
+              <th>Code</th>
+              <th>East/West Flag</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @prefecture_codes.each do |prefecture| %>
+              <tr>
+                <td><%= prefecture.name %></td>
+                <td><%= prefecture.code %></td>
+                <td><%= prefecture.ew_flag %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Items Section -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5>Recently Added Items</h5>
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>SKU Code</th>
+              <th>Stock Available</th>
+              <th>Warehouse Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @recent_items.each do |item| %>
+              <tr>
+                <td><%= item.sku_code %></td>
+                <td><%= item.stock %> Items</td>
+                <td><%= item.warehouse_code %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

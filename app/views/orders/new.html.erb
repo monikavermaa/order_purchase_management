@@ -1,0 +1,72 @@
+<%= form_with model: @order, local: true do |f| %>
+    <h2>Order Form</h2>
+  
+    <p>
+      <%= f.label :delivery_zipcode, "Postal Code" %>
+      <%= f.text_field :delivery_zipcode, id: "zipcode", autocomplete: "off" %>
+    </p>
+  
+    <p>
+      <%= f.label :delivery_state %>
+      <%= f.text_field :delivery_state, id: "state" %>
+    </p>
+  
+    <p>
+      <%= f.label :delivery_city %>
+      <%= f.text_field :delivery_city, id: "city" %>
+    </p>
+  
+    <p>
+      <%= f.label :delivery_area %>
+      <%= f.text_field :delivery_area, id: "address" %>
+    </p>
+  
+    <p>
+      <%= f.label :delivery_address, "Address" %>
+      <%= f.text_field :delivery_address %>
+    </p>
+
+    <h3>Items</h3>
+
+    <div id="order-items">
+      <%= f.fields_for :order_items, local: true do |item| %>
+        <%= render 'order_item_fields', f: item %>
+      <% end %>
+
+      <%= link_to_add_association "Add Items", f, :order_items, partial: 'order_item_fields', class: "add-item" %>
+    </div>
+    
+    <%= f.submit "Create Order" %>
+<% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const zipcodeInput = document.getElementById('zipcode');
+    console.log("This script runs when the page loads.");
+      if (zipcodeInput) {
+        console.log("Zipcode input found!");
+        zipcodeInput.addEventListener("blur", function () {
+          const postalCode = zipcodeInput.value.trim();
+          console.log("Postal Code Entered:", postalCode);
+          if (postalCode.length === 7) { // Ensure it's a 7-digit postal code
+            fetch("/orders/postal_code_search.json?zipcode=" + postalCode)
+              .then(response => {
+                console.log("Response received:", response.status); 
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+              })
+              .then(data => {
+                console.log("Data received:", data); 
+                document.getElementById("state").value = data.state || "";
+                document.getElementById("city").value = data.city || "";
+                document.getElementById("address").value = data.area || "";
+              })
+              .catch(error => {
+                console.error("Error fetching address data:", error);
+                alert("Invalid postal code or server error.");
+              });
+          }
+        });
+    }
+  });
+</script>
