@@ -56,7 +56,7 @@ group :development, :test do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '~> 6.0'   # RSpec for Rails
+  gem 'rspec-rails', '~> 7.1'   # RSpec for Rails
   gem 'factory_bot_rails'       # FactoryBot for test data
   gem 'faker'                   # Faker for generating fake data
   gem 'database_cleaner-active_record' # Database cleaner
