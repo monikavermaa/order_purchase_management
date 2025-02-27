@@ -1,16 +1,22 @@
-# spec/controllers/orders_controller_spec.rb
+# spec/requests/orders_spec.rb
 require 'rails_helper'
 
-RSpec.describe OrdersController, type: :controller do
-  let(:user) { create(:user) } # Assuming you have a user factory
-  let(:prefecture) { create(:prefecture_code, name: '北海道', ew_flag: '東') } # Adjust as needed
-  let(:sku) { create(:sku) } # Assuming you have an SKU factory
+RSpec.describe "Orders", type: :request do
+  include Devise::Test::IntegrationHelpers # This line adds the Devise helpers
 
-  before do
-    sign_in user # Assuming you're using Devise for authentication
+  #let(:user) { create(:user) }  # Assuming you have a user factory
+	let(:user) { create(:user, email: 'user@example.com', password: 'password123') }
+  let(:prefecture) { create(:prefecture_code, name: '北海道', ew_flag: '東') }  # Adjust as needed
+  let!(:sku) { create(:souko_zaiko) } # Assuming you have an SKU factory
+
+	before do
+		# debugger
+		user.email == 'user@example.com'
+		user.password == 'password123'
+   # sign_in user  # This will now work because of the inclusion above
   end
 
-  describe 'POST #create' do
+  describe 'POST /orders' do
     context 'with valid attributes' do
       let(:valid_attributes) do
         {
@@ -21,37 +27,39 @@ RSpec.describe OrdersController, type: :controller do
             delivery_area: 'Abdf',
             delivery_address: 'Abc, addreass, swwqer',
             order_items_attributes: [
-              { sku_code: sku.code, quantity: 2, price: 100 }
+              { sku_code: sku.sku_code, quantity: 2, price: 100 }
             ]
           }
         }
       end
 
       it 'creates a new order' do
+				debugger
         expect {
-          post :create, params: valid_attributes
+          post orders_path, params: valid_attributes
         }.to change(Order, :count).by(1)
       end
 
       it 'creates associated order items' do
         expect {
-          post :create, params: valid_attributes
+          post orders_path, params: valid_attributes
         }.to change(OrderItem, :count).by(1)
       end
 
       it 'deducts stock from souko_zaiko' do
         expect {
-          post :create, params: valid_attributes
-        }.to change { SoukoZaiko.find_by(sku_code: sku.code, prefecture_code_id: prefecture.id).stock }.by(-2)
+          post orders_path, params: valid_attributes
+        }.to change { SoukoZaiko.find_by(sku_code: sku.sku_code).stock }.by(-2)
       end
 
       it 'redirects to the new order' do
-        post :create, params: valid_attributes
+        post orders_path, params: valid_attributes
         expect(response).to redirect_to(Order.last)
       end
 
       it 'sets a success notice' do
-        post :create, params: valid_attributes
+        post orders_path, params: valid_attributes
+        follow_redirect!
         expect(flash[:notice]).to eq('Order created successfully.')
       end
     end
@@ -72,12 +80,12 @@ RSpec.describe OrdersController, type: :controller do
 
       it 'does not create a new order' do
         expect {
-          post :create, params: invalid_attributes
+          post orders_path, params: invalid_attributes
         }.to_not change(Order, :count)
       end
 
       it 'renders the new template' do
-        post :create, params: invalid_attributes
+        post orders_path, params: invalid_attributes
         expect(response).to render_template(:new)
       end
     end
