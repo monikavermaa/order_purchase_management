@@ -1,4 +1,4 @@
-----------------------  **Order Purchase Management** --------------------------------------------------------------------------------------------------------------
+                                                                               **Order Purchase Management** 
 
 Created A application which could be easily setup on linux and also on windows with the help of docker.
  
