@@ -8,7 +8,7 @@ class CreateOrders < ActiveRecord::Migration[8.0]
       t.string :delivery_city, null: false
       t.string :delivery_area, null: false
       t.string :delivery_address, null: false
-      t.integer :tax, null: false  # Tax amount
+      t.integer :tax, null: false, default: 0  # Tax amount
       t.belongs_to  :user, null: false, foreign_key: true
       t.timestamps
     end
