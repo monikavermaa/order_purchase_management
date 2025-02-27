@@ -8,20 +8,12 @@ class DashboardController < ApplicationController
   private
 
   def set_data
-    # Orders overview
-    @orders = Order.order(created_at: :desc).limit(10) # Display last 10 orders for quick overview
-
-    # Total stock in all warehouses
-    @total_stock_east = SoukoZaiko.where(warehouse_code: 'EAST').sum(:stock)
-    @total_stock_west = SoukoZaiko.where(warehouse_code: 'WEST').sum(:stock)
-
-    # Stock status per SKU
-    @stock_status = SoukoZaiko.group(:sku_code).sum(:stock)
-
-    # Prefecture code data (East/West flag)
-    @prefecture_codes = PrefectureCode.all
-
-    # Recently added items (optional, depends on the data you have)
-    @recent_items = SoukoZaiko.order(created_at: :desc).limit(5)
+    @orders = Order.order(created_at: :desc).limit(10)
+    warehouse_stock = SoukoZaiko.where(warehouse_code: ['EAST', 'WEST']).group(:warehouse_code).sum(:stock)
+    @total_stock_east = warehouse_stock['EAST'] || 0
+    @total_stock_west = warehouse_stock['WEST'] || 0
+    @stock_status = SoukoZaiko.select(:sku_code).group(:sku_code).sum(:stock)
+    @prefecture_codes = PrefectureCode.select(:code, :name)
+    @recent_items = SoukoZaiko.order(created_at: :desc).limit(5).select(:id, :sku_code, :stock)
   end
 end

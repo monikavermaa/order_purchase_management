@@ -10,10 +10,9 @@ RSpec.describe "Orders", type: :request do
   let!(:sku) { create(:souko_zaiko) } # Assuming you have an SKU factory
 
 	before do
-		# debugger
 		user.email == 'user@example.com'
 		user.password == 'password123'
-   # sign_in user  # This will now work because of the inclusion above
+   # sign_in user  # This line signs in the user
   end
 
   describe 'POST /orders' do
