@@ -34,7 +34,6 @@ RSpec.describe "Orders", type: :request do
       end
 
       it 'creates a new order' do
-				debugger
         expect {
           post orders_path, params: valid_attributes
         }.to change(Order, :count).by(1)
