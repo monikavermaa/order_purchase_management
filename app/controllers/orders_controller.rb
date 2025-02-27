@@ -4,6 +4,7 @@ class OrdersController < ApplicationController
   def new
     @order = Order.new
     @order.order_items.build
+    @available_skus = SoukoZaiko.where("stock > ?", 0).pluck(:sku_code).uniq
   end
 
   def postal_code_search 
@@ -18,17 +19,13 @@ class OrdersController < ApplicationController
     if prefecture.nil?
       redirect_to new_order_path, alert: "Invalid state name"
     else
-      east_west_flag = prefecture.ew_flag
       ActiveRecord::Base.transaction do
         @order.order_items.each do |item|
           souko_zaiko = SoukoZaiko.find_by(sku_code: item.sku_code, prefecture_code_id: prefecture.id)
-
           if souko_zaiko.nil?
             raise ActiveRecord::Rollback, "SoukoZaiko record not found for sku_code #{item.sku_code} and prefecture_code_id #{prefecture.id}"
           end
-
           souko_zaiko.update!(stock: souko_zaiko.stock - item.quantity)
-          SoukoZaiko.create!(warehouse_code: east_west_flag, sku_code: item.sku_code, stock_type: "02", stock: item.quantity, prefecture_code_id: prefecture.id)
         end
 
         @order.user_id = current_user.id
