@@ -76,3 +76,7 @@ souko_zaiko_data = [
 souko_zaiko_data.each do |data|
   SoukoZaiko.create!(data)
 end
+
+
+puts "test data created successfully"
+# Add SoukoZaiko data with references to PrefectureCode
