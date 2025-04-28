@@ -73,7 +73,7 @@ group :test do
   gem 'capybara'                # Integration testing
   gem 'selenium-webdriver'       # Web browser automation
   gem 'webdrivers'               # Automatically manage WebDriver binaries
-  gem 'shoulda-matchers', '~> 5.0' # Adds matchers for ActiveRecord & controllers
+  gem 'shoulda-matchers', '~> 6.5' # Adds matchers for ActiveRecord & controllers
   gem 'simplecov'                # Test coverage reporting
   # For stubbing and mocking
   gem 'rspec-mocks'
