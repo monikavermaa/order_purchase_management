@@ -38,7 +38,7 @@ Setup
 
 Clone the Repository:
 
-**git clone https://github.com/monikavermaa/company_tasks_management**
+**git clone https://github.com/monikavermaa/order_purchase_management**
 
 **cd order_management_system**
 
