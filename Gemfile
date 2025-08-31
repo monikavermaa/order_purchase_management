@@ -81,7 +81,7 @@ end
 
 gem 'mysql2', '>= 0.5.2'
 gem 'sidekiq'
-gem 'bootstrap', '~> 5.2.2'
+gem 'bootstrap', '~> 5.3.5'
 gem 'sprockets-rails'   #for assets file 
 gem 'httparty'
 gem 'cocoon'
